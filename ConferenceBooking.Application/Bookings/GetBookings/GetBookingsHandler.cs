@@ -18,7 +18,7 @@ public class GetBookingsHandler : IRequestHandler<GetBookingsQuery, List<Booking
 
     public async Task<List<BookingDto>> Handle(GetBookingsQuery request, CancellationToken cancellationToken)
     {
-        var spec = new BookingWithAdditionalServicesSpecification(request.page, request.pageSize);
+        var spec = new BookingWithAdditionalServicesSpecification(request.Page, request.PageSize);
         var bookings = await _bookingRepository.GetAll(spec);
         
         var results = bookings.Select(b => BookingMapper.ToDto(b)).ToList();

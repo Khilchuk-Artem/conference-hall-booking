@@ -1,4 +1,5 @@
 ﻿using ConferenceBooking.Application.Abstractions;
+using ConferenceBooking.Application.Specifications.Bookings;
 using ConferenceBooking.Application.Specifications.ConferenceHalls;
 using ConferenceBooking.Domain.Entities;
 using ConferenceBooking.Domain.Pricing;
@@ -21,6 +22,11 @@ public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Guid>
 
     public async Task<Guid> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
     {
+        var overlappingBookingsSpecification = new OverlappingBookingsSpecification(request.ConferenceHallId, request.StartTime, request.EndTime);
+        var bookings = await _bookingRepository.GetAll(overlappingBookingsSpecification);
+        
+        if (bookings.Any()) return Guid.Empty; //throw exception later
+        
         var servicesSpecification = new ConferenceHallWithServicesSpecification();
         var conferenceHall = await _conferenceHallRepository.GetById(request.ConferenceHallId, servicesSpecification);
         
@@ -34,6 +40,9 @@ public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Guid>
             .AdditionalServices
             .Where(s=>request.AdditionalServiceIds.Contains(s.Id))
             .ToList();
+        
+        if (services.Count != request.AdditionalServiceIds.Distinct().Count()) return Guid.Empty; // throw exception later
+        
         var servicesCost = services.Sum(s => s.Price);
         
         var booking = new Booking()
@@ -58,6 +67,8 @@ public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Guid>
                 }).ToList()
         };
         
-        throw new NotImplementedException();
+        await _bookingRepository.Add(booking);
+        
+        return booking.Id;
     }
 }

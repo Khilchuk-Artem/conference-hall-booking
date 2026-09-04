@@ -30,6 +30,8 @@ public class CreateConferenceHallHandler : IRequestHandler<CreateConferenceHallC
         
         var additionalServices = await _additionalServiceRepository.GetAll(srevicesFromListSpec);
         
+        if (additionalServices.Count != request.AdditionalServiceIds.Distinct().Count()) return Guid.Empty; // throw exception later
+        
         conferenceHall.AdditionalServices = additionalServices;
         
         await _conferenceHallRepository.Add(conferenceHall);

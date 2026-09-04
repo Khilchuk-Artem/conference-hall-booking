@@ -34,6 +34,8 @@ public class EditConferenceHallHandler : IRequestHandler<EditConferenceHallComma
 
         var additionalServices = await _additionalServiceRepository.GetAll(servicesFromListSpec);
         
+        if (additionalServices.Count != request.AdditionalServiceIds.Distinct().Count()) return null; // throw exception later
+        
         entity.AdditionalServices.Clear();
         entity.AdditionalServices.AddRange(additionalServices);
         
