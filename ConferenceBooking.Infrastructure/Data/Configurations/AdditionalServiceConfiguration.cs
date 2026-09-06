@@ -10,8 +10,6 @@ public class AdditionalServiceConfiguration : IEntityTypeConfiguration<Additiona
     {
         builder.ToTable("AdditionalServices");
         
-        builder.HasKey(x => x.Id);
-
         builder.Property(x => x.Name)
             .IsRequired()
             .HasMaxLength(200);

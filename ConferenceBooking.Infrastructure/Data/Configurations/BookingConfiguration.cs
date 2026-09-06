@@ -10,8 +10,6 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
     {
         builder.ToTable("Bookings");
         
-        builder.HasKey(x => x.Id);
-        
         builder.Property(x => x.StartTime)
             .IsRequired();
         

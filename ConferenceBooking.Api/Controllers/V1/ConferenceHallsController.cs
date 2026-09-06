@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using ConferenceBooking.Api.Idempotency;
 using ConferenceBooking.Application.ConferenceHalls.CreateConferenceHall;
 using ConferenceBooking.Application.ConferenceHalls.DeleteConferenceHall;
 using ConferenceBooking.Application.ConferenceHalls.EditConferenceHall;
@@ -21,33 +22,34 @@ public class ConferenceHallsController : Controller
     }
 
     [HttpPost(Name = "CreateConferenceHall")]
-    public async Task<IActionResult> Create([FromBody] CreateConferenceHallCommand command)
+    [Idempotency]
+    public async Task<IActionResult> Create([FromBody] CreateConferenceHallCommand command, CancellationToken cancellationToken)
     {
-        var id = await _mediator.Send(command);
+        var id = await _mediator.Send(command, cancellationToken);
         if (id == Guid.Empty) return BadRequest("Conference hall was not created.");
 
         return CreatedAtAction(nameof(Create), new { version = "1", id }, id);
     }
 
     [HttpGet("available", Name = "GetAvailableConferenceHalls")]
-    public async Task<IActionResult> GetAvailable([FromQuery] GetAvailableConferenceHallsQuery query)
+    public async Task<IActionResult> GetAvailable([FromQuery] GetAvailableConferenceHallsQuery query, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(query);
+        var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
 
     [HttpPut("{id:guid}", Name = "EditConferenceHall")]
-    public async Task<IActionResult> Edit(Guid id, [FromBody] EditConferenceHallCommand command)
+    public async Task<IActionResult> Edit(Guid id, [FromBody] EditConferenceHallCommand command, CancellationToken cancellationToken)
     {
         command.Id = id;
-        var result = await _mediator.Send(command);
+        var result = await _mediator.Send(command, cancellationToken);
         return result is null ? BadRequest("Conference hall was not updated.") : Ok(result);
     }
 
     [HttpDelete("{id:guid}", Name = "DeleteConferenceHall")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new DeleteConferenceHallCommand { Id = id });
+        var result = await _mediator.Send(new DeleteConferenceHallCommand { Id = id }, cancellationToken);
         return result is null ? NotFound() : NoContent();
     }
 }

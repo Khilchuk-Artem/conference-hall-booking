@@ -1,5 +1,7 @@
 using ConferenceBooking.Application.Abstractions;
+using ConferenceBooking.Application.Abstractions.Idempotency;
 using ConferenceBooking.Infrastructure.Data;
+using ConferenceBooking.Infrastructure.Idempotency;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +18,7 @@ public static class DependencyInjection
 
         services.AddDbContext<ConferenceBookingDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped<IIdempotencyStore, IdempotencyStore>();
 
         return services;
     }

@@ -10,8 +10,6 @@ public class ConferenceHallConfiguration : IEntityTypeConfiguration<ConferenceHa
     {
         builder.ToTable("ConferenceHalls");
         
-        builder.HasKey(x => x.Id);
-        
         builder.Property(x => x.Name)
             .IsRequired()
             .HasMaxLength(200);

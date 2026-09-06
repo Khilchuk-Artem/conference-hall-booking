@@ -10,8 +10,6 @@ public class BookingServiceConfiguration : IEntityTypeConfiguration<BookingServi
     {
         builder.ToTable("BookingServices");
         
-        builder.HasKey(x => x.Id);
-        
         builder.Property(x => x.ServiceName)
             .IsRequired()
             .HasMaxLength(200);       
