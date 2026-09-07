@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using ConferenceBooking.Api.Idempotency;
 using ConferenceBooking.Application.Bookings.CreateBooking;
+using ConferenceBooking.Application.Bookings.GetBookingById;
 using ConferenceBooking.Application.Bookings.GetBookings;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -23,8 +24,15 @@ public class BookingsController : Controller
     [Idempotency]
     public async Task<IActionResult> Create([FromBody] CreateBookingCommand command, CancellationToken cancellationToken)
     {
-        var id = await _mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(Create), new { version = "1", id }, id);
+        var result = await _mediator.Send(command, cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { version = "1", id = result.Id }, result);
+    }
+
+    [HttpGet("{id:guid}", Name = "GetBookingById")]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetBookingByIdQuery { Id = id }, cancellationToken);
+        return Ok(result);
     }
 
     [HttpGet(Name = "GetBookings")]

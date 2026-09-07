@@ -6,9 +6,12 @@ using ConferenceBooking.Domain.Entities;
 using ConferenceBooking.Domain.Pricing;
 using MediatR;
 
+using ConferenceBooking.Application.DTO;
+using ConferenceBooking.Application.Mapping;
+
 namespace ConferenceBooking.Application.Bookings.CreateBooking;
 
-public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Guid>
+public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, BookingDto>
 {
     private readonly IRepository<Booking> _bookingRepository;
     private readonly IRepository<ConferenceHall> _conferenceHallRepository;
@@ -21,7 +24,7 @@ public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Guid>
         _rentPriceCalculator = rentPriceCalculator;
     }
 
-    public async Task<Guid> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
+    public async Task<BookingDto> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
     {
         var overlappingBookingsSpecification = new OverlappingBookingsSpecification(request.ConferenceHallId, request.StartTime, request.EndTime);
         var bookings = await _bookingRepository.GetAll(overlappingBookingsSpecification);
@@ -69,6 +72,6 @@ public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Guid>
         
         await _bookingRepository.Add(booking);
         
-        return booking.Id;
+        return BookingMapper.ToDto(booking);
     }
 }

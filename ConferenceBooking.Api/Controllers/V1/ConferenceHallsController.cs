@@ -4,6 +4,7 @@ using ConferenceBooking.Application.ConferenceHalls.CreateConferenceHall;
 using ConferenceBooking.Application.ConferenceHalls.DeleteConferenceHall;
 using ConferenceBooking.Application.ConferenceHalls.EditConferenceHall;
 using ConferenceBooking.Application.ConferenceHalls.GetAvailableConferenceHalls;
+using ConferenceBooking.Application.ConferenceHalls.GetConferenceHallById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,14 @@ public class ConferenceHallsController : Controller
     public async Task<IActionResult> Create([FromBody] CreateConferenceHallCommand command, CancellationToken cancellationToken)
     {
         var id = await _mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(Create), new { version = "1", id }, id);
+        return CreatedAtAction(nameof(GetById), new { version = "1", id }, id);
+    }
+
+    [HttpGet("{id:guid}", Name = "GetConferenceHallById")]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetConferenceHallByIdQuery { Id = id }, cancellationToken);
+        return Ok(result);
     }
 
     [HttpGet("available", Name = "GetAvailableConferenceHalls")]

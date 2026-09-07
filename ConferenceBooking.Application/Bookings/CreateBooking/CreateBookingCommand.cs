@@ -1,8 +1,10 @@
 ﻿using MediatR;
 
+using ConferenceBooking.Application.DTO;
+
 namespace ConferenceBooking.Application.Bookings.CreateBooking;
 
-public class CreateBookingCommand : IRequest<Guid>
+public class CreateBookingCommand : IRequest<BookingDto>
 {
     public Guid ConferenceHallId { get; set; }
 
