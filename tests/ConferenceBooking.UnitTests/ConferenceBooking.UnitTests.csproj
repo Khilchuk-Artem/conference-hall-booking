@@ -27,9 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ConferenceBooking.Application\ConferenceBooking.Application.csproj" />
-    <ProjectReference Include="..\..\ConferenceBooking.Domain\ConferenceBooking.Domain.csproj" />
-    <ProjectReference Include="..\..\ConferenceBooking.Infrastructure\ConferenceBooking.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\ConferenceBooking.Application\ConferenceBooking.Application.csproj" />
+    <ProjectReference Include="..\..\src\ConferenceBooking.Domain\ConferenceBooking.Domain.csproj" />
+    <ProjectReference Include="..\..\src\ConferenceBooking.Infrastructure\ConferenceBooking.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

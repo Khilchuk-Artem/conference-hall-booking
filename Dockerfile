@@ -7,13 +7,13 @@ RUN apt-get update \
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY ["ConferenceBooking.Api/ConferenceBooking.Api.csproj", "ConferenceBooking.Api/"]
-COPY ["ConferenceBooking.Application/ConferenceBooking.Application.csproj", "ConferenceBooking.Application/"]
-COPY ["ConferenceBooking.Infrastructure/ConferenceBooking.Infrastructure.csproj", "ConferenceBooking.Infrastructure/"]
-COPY ["ConferenceBooking.Domain/ConferenceBooking.Domain.csproj", "ConferenceBooking.Domain/"]
-RUN dotnet restore "ConferenceBooking.Api/ConferenceBooking.Api.csproj"
+COPY ["src/ConferenceBooking.Api/ConferenceBooking.Api.csproj", "src/ConferenceBooking.Api/"]
+COPY ["src/ConferenceBooking.Application/ConferenceBooking.Application.csproj", "src/ConferenceBooking.Application/"]
+COPY ["src/ConferenceBooking.Infrastructure/ConferenceBooking.Infrastructure.csproj", "src/ConferenceBooking.Infrastructure/"]
+COPY ["src/ConferenceBooking.Domain/ConferenceBooking.Domain.csproj", "src/ConferenceBooking.Domain/"]
+RUN dotnet restore "src/ConferenceBooking.Api/ConferenceBooking.Api.csproj"
 COPY . .
-WORKDIR "/src/ConferenceBooking.Api"
+WORKDIR "/src/src/ConferenceBooking.Api"
 RUN dotnet build "ConferenceBooking.Api.csproj" -c Release --no-restore -o /app/build
 
 FROM build AS publish
