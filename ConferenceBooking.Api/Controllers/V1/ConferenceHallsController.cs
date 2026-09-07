@@ -26,8 +26,6 @@ public class ConferenceHallsController : Controller
     public async Task<IActionResult> Create([FromBody] CreateConferenceHallCommand command, CancellationToken cancellationToken)
     {
         var id = await _mediator.Send(command, cancellationToken);
-        if (id == Guid.Empty) return BadRequest("Conference hall was not created.");
-
         return CreatedAtAction(nameof(Create), new { version = "1", id }, id);
     }
 
@@ -43,13 +41,13 @@ public class ConferenceHallsController : Controller
     {
         command.Id = id;
         var result = await _mediator.Send(command, cancellationToken);
-        return result is null ? BadRequest("Conference hall was not updated.") : Ok(result);
+        return Ok(result);
     }
 
     [HttpDelete("{id:guid}", Name = "DeleteConferenceHall")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new DeleteConferenceHallCommand { Id = id }, cancellationToken);
-        return result is null ? NotFound() : NoContent();
+        await _mediator.Send(new DeleteConferenceHallCommand { Id = id }, cancellationToken);
+        return NoContent();
     }
 }

@@ -24,8 +24,6 @@ public class BookingsController : Controller
     public async Task<IActionResult> Create([FromBody] CreateBookingCommand command, CancellationToken cancellationToken)
     {
         var id = await _mediator.Send(command, cancellationToken);
-        if (id == Guid.Empty) return BadRequest("Booking was not created.");
-
         return CreatedAtAction(nameof(Create), new { version = "1", id }, id);
     }
 

@@ -1,5 +1,6 @@
 ﻿using ConferenceBooking.Application.Abstractions;
 using ConferenceBooking.Application.DTO;
+using ConferenceBooking.Application.Exceptions;
 using ConferenceBooking.Application.Mapping;
 using ConferenceBooking.Application.Specifications.AdditionalServices;
 using ConferenceBooking.Application.Specifications.ConferenceHalls;
@@ -24,7 +25,7 @@ public class EditConferenceHallHandler : IRequestHandler<EditConferenceHallComma
         var hallWithServicesSpec = new ConferenceHallWithServicesSpecification();
         var entity = await _conferenceHallRepository.GetById(request.Id, hallWithServicesSpec);
         
-        if (entity == null) return null;
+        if (entity == null) throw new NotFoundException("Conference hall", request.Id);
         
         entity.Name = request.Name;
         entity.Capacity = request.Capacity;
@@ -34,7 +35,7 @@ public class EditConferenceHallHandler : IRequestHandler<EditConferenceHallComma
 
         var additionalServices = await _additionalServiceRepository.GetAll(servicesFromListSpec);
         
-        if (additionalServices.Count != request.AdditionalServiceIds.Distinct().Count()) return null; // throw exception later
+        if (additionalServices.Count != request.AdditionalServiceIds.Distinct().Count()) throw new BadRequestException("One or more additional services were not found.");
         
         entity.AdditionalServices.Clear();
         entity.AdditionalServices.AddRange(additionalServices);

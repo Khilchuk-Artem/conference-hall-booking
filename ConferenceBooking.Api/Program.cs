@@ -8,13 +8,13 @@ builder.Services.AddApi(builder.Configuration);
 
 var app = builder.Build();
 
-
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ConferenceBookingDbContext>();
     db.Database.Migrate();
 }
 
+app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseHttpsRedirection();
 app.UseRouting();

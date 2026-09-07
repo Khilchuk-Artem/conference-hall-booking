@@ -1,5 +1,6 @@
 ﻿using Ardalis.Specification;
 using ConferenceBooking.Application.Abstractions;
+using ConferenceBooking.Application.Exceptions;
 using ConferenceBooking.Application.Specifications.AdditionalServices;
 using ConferenceBooking.Domain.Entities;
 using MediatR;
@@ -30,7 +31,7 @@ public class CreateConferenceHallHandler : IRequestHandler<CreateConferenceHallC
         
         var additionalServices = await _additionalServiceRepository.GetAll(srevicesFromListSpec);
         
-        if (additionalServices.Count != request.AdditionalServiceIds.Distinct().Count()) return Guid.Empty; // throw exception later
+        if (additionalServices.Count != request.AdditionalServiceIds.Distinct().Count()) throw new BadRequestException("One or more additional services were not found.");
         
         conferenceHall.AdditionalServices = additionalServices;
         

@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using ConferenceBooking.Api.ExceptionHandling;
 using ConferenceBooking.Application;
 using ConferenceBooking.Infrastructure;
 
@@ -9,6 +10,9 @@ public static class DependencyInjection
     public static IServiceCollection AddApi(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
+        services.AddProblemDetails(options => options.CustomizeProblemDetails = context =>
+            context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier);
+        services.AddExceptionHandler<CustomExceptionHandler>();
 
         services.AddApiVersioning(options =>
             {

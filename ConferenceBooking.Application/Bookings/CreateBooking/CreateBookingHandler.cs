@@ -1,4 +1,5 @@
 ﻿using ConferenceBooking.Application.Abstractions;
+using ConferenceBooking.Application.Exceptions;
 using ConferenceBooking.Application.Specifications.Bookings;
 using ConferenceBooking.Application.Specifications.ConferenceHalls;
 using ConferenceBooking.Domain.Entities;
@@ -25,23 +26,22 @@ public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Guid>
         var overlappingBookingsSpecification = new OverlappingBookingsSpecification(request.ConferenceHallId, request.StartTime, request.EndTime);
         var bookings = await _bookingRepository.GetAll(overlappingBookingsSpecification);
         
-        if (bookings.Any()) return Guid.Empty; //throw exception later
+        if (bookings.Any()) throw new ConflictException("The conference hall is already booked for the selected time.");
         
         var servicesSpecification = new ConferenceHallWithServicesSpecification();
         var conferenceHall = await _conferenceHallRepository.GetById(request.ConferenceHallId, servicesSpecification);
+        if (conferenceHall == null) throw new NotFoundException("Conference hall", request.ConferenceHallId);
         
         var hallCost =
             _rentPriceCalculator.CalculateTotalPrice(conferenceHall.RentRate, request.StartTime, request.EndTime) ??
-            throw new Exception(
-                "Invalid rent price calculation"
-            );
+            throw new InvalidOperationException("Rent price could not be calculated.");
         
         var services = conferenceHall
             .AdditionalServices
             .Where(s=>request.AdditionalServiceIds.Contains(s.Id))
             .ToList();
         
-        if (services.Count != request.AdditionalServiceIds.Distinct().Count()) return Guid.Empty; // throw exception later
+        if (services.Count != request.AdditionalServiceIds.Distinct().Count()) throw new BadRequestException("One or more additional services were not found.");
         
         var servicesCost = services.Sum(s => s.Price);
         
