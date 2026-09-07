@@ -13,9 +13,7 @@ public class RentPriceCalculator
     
     public decimal? CalculateTotalPrice(decimal baseRent, DateTimeOffset startDate, DateTimeOffset endDate)
     {
-        //edge-case: if it spans more than one day
-        //if it goes into no-serve time, might overlap with above in some implementations
-        if (startDate.Date != endDate.Date) return null; // throw exception later
+        if (startDate.Date != endDate.Date) return null;
         if (endDate <= startDate) return null;
         
         var startTime = TimeOnly.FromTimeSpan(startDate.TimeOfDay);
@@ -26,6 +24,7 @@ public class RentPriceCalculator
 
         if (startTime < new TimeOnly(6, 0) || endTime > new TimeOnly(23, 0)) return null;
         
+        // apply each bracket's rate to the part of the booking it covers
         while (current < endTime)
         {
             var bracket = Brackets.First(x =>

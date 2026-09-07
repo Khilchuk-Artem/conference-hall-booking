@@ -43,6 +43,7 @@ public sealed class IdempotencyStore : IIdempotencyStore
 
             return ToClaim(candidate, isNew: true);
         }
+        // another request may have claimed this key first
         catch (DbUpdateException)
         {
             _context.Entry(candidate).State = EntityState.Detached;

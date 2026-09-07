@@ -21,6 +21,7 @@ public class ReportRepository : IReportRepository
             .AsNoTracking()
             .WithSpecification(new ReportPeriodSpecification(from, to));
 
+        // hours are clipped to the report window while revenue keeps the booking total
         var bookingsWithDuration = bookings.Select(booking => new
         {
             booking.ConferenceHallId,

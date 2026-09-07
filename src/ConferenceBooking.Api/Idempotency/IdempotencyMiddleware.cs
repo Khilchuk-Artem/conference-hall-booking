@@ -76,6 +76,7 @@ public sealed class IdempotencyMiddleware
             return;
         }
 
+        // keep the response bytes for a later replay
         var originalResponseBody = context.Response.Body;
         await using var responseBuffer = new MemoryStream();
         context.Response.Body = responseBuffer;

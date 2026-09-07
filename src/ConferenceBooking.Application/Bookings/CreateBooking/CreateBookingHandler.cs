@@ -51,6 +51,7 @@ public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Bookin
         
         var servicesCost = services.Sum(s => s.Price);
         
+        // keep the names and prices used at booking time
         var booking = new Booking()
         {
             ConferenceHallId = conferenceHall.Id,
