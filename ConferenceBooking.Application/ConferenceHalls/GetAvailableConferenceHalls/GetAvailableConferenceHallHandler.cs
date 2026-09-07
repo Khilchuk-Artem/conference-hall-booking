@@ -18,7 +18,7 @@ public class GetAvailableConferenceHallHandler : IRequestHandler<GetAvailableCon
 
     public async Task<List<ConferenceHallDto>> Handle(GetAvailableConferenceHallsQuery request, CancellationToken cancellationToken)
     {
-        var availableHallsSpec = new AvailableConferenceHallsSpecification(request.StartTime, request.EndTime, request.Capacity, request.Page, request.PageSize);
+        var availableHallsSpec = new AvailableConferenceHallsSpecification(request.StartTime.ToUniversalTime(), request.EndTime.ToUniversalTime(), request.Capacity, request.Page, request.PageSize);
         
         var availableHalls = await _conferenceHallRepository.GetAll(availableHallsSpec);
 

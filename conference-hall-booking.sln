@@ -4,6 +4,8 @@ VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1F3D543D-9245-4F09-9681-9B3D86EE86BF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9B2D4C82-43D7-477A-9A69-76AB14535761}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceBooking.Domain", "ConferenceBooking.Domain\ConferenceBooking.Domain.csproj", "{C0EAA102-7581-4608-A498-1D4EFC9A9D71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceBooking.Application", "ConferenceBooking.Application\ConferenceBooking.Application.csproj", "{268AE2E0-B7BF-4244-B412-939AFD603A06}"
@@ -11,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceBooking.Infrastructure", "ConferenceBooking.Infrastructure\ConferenceBooking.Infrastructure.csproj", "{A9E114D2-4C6A-430F-B4C0-8E998D0B0590}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceBooking.Api", "ConferenceBooking.Api\ConferenceBooking.Api.csproj", "{2A51E2BE-16D1-45BB-9907-7DC2F84CA235}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceBooking.UnitTests", "tests\ConferenceBooking.UnitTests\ConferenceBooking.UnitTests.csproj", "{33D2E330-BD9B-437F-A183-89140472A3F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +38,10 @@ Global
 		{2A51E2BE-16D1-45BB-9907-7DC2F84CA235}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A51E2BE-16D1-45BB-9907-7DC2F84CA235}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A51E2BE-16D1-45BB-9907-7DC2F84CA235}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33D2E330-BD9B-437F-A183-89140472A3F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33D2E330-BD9B-437F-A183-89140472A3F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33D2E330-BD9B-437F-A183-89140472A3F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33D2E330-BD9B-437F-A183-89140472A3F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +51,7 @@ Global
 		{268AE2E0-B7BF-4244-B412-939AFD603A06} = {1F3D543D-9245-4F09-9681-9B3D86EE86BF}
 		{A9E114D2-4C6A-430F-B4C0-8E998D0B0590} = {1F3D543D-9245-4F09-9681-9B3D86EE86BF}
 		{2A51E2BE-16D1-45BB-9907-7DC2F84CA235} = {1F3D543D-9245-4F09-9681-9B3D86EE86BF}
+		{33D2E330-BD9B-437F-A183-89140472A3F8} = {9B2D4C82-43D7-477A-9A69-76AB14535761}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {731431F6-108A-411F-B242-8B2BFDB0CAC7}

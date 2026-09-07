@@ -16,7 +16,7 @@ public class GetReportSummaryHandler : IRequestHandler<GetReportSummaryQuery, Re
 
     public async Task<ReportSummaryDto> Handle(GetReportSummaryQuery request, CancellationToken cancellationToken)
     {
-        var report = await _reportRepository.GetSummary(request.From, request.To);
+        var report = await _reportRepository.GetSummary(request.From.ToUniversalTime(), request.To.ToUniversalTime());
         return ReportMapper.ToDto(report);
     }
 }

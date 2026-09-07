@@ -26,7 +26,10 @@ public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Bookin
 
     public async Task<BookingDto> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
     {
-        var overlappingBookingsSpecification = new OverlappingBookingsSpecification(request.ConferenceHallId, request.StartTime, request.EndTime);
+        var startTimeUtc = request.StartTime.ToUniversalTime();
+        var endTimeUtc = request.EndTime.ToUniversalTime();
+
+        var overlappingBookingsSpecification = new OverlappingBookingsSpecification(request.ConferenceHallId, startTimeUtc, endTimeUtc);
         var bookings = await _bookingRepository.GetAll(overlappingBookingsSpecification);
         
         if (bookings.Any()) throw new ConflictException("The conference hall is already booked for the selected time.");
@@ -53,8 +56,8 @@ public class CreateBookingHandler : IRequestHandler<CreateBookingCommand, Bookin
             ConferenceHallId = conferenceHall.Id,
             
             HallName = conferenceHall.Name,
-            StartTime = request.StartTime,
-            EndTime = request.EndTime,
+            StartTime = startTimeUtc,
+            EndTime = endTimeUtc,
             HallHourlyRate = conferenceHall.RentRate,
             
             TotalServicesCost = servicesCost,
