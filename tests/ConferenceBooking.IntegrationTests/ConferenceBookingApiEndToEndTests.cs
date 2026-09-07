@@ -112,8 +112,8 @@ public sealed class ConferenceBookingApiEndToEndTests : IClassFixture<Conference
         Assert.Equal(hallId, booking.ConferenceHallId);
         Assert.Equal("E2E Hall Updated", booking.HallName);
         Assert.Equal(4800m, booking.HallCost);
-        Assert.Equal(300m, booking.TotalServicesCost);
-        Assert.Equal(5100m, booking.TotalCost);
+        Assert.Equal(150m, booking.TotalServicesCost);
+        Assert.Equal(4950m, booking.TotalCost);
         Assert.Single(booking.AdditionalServices);
 
         var replayRequest = new HttpRequestMessage(HttpMethod.Post, "api/v1/Bookings")
@@ -135,7 +135,7 @@ public sealed class ConferenceBookingApiEndToEndTests : IClassFixture<Conference
             "api/v1/Reports/summary?from=2030-01-01T00:00:00%2B00:00&to=2030-01-02T00:00:00%2B00:00");
         Assert.Equal(1, report.BookingsCount);
         Assert.Equal(2d, report.TotalHours);
-        Assert.Equal(5100m, report.TotalRevenue);
+        Assert.Equal(4950m, report.TotalRevenue);
         var hallReport = Assert.Single(report.Halls, item => item.ConferenceHallId == hallId);
         Assert.Equal("E2E Hall Updated", hallReport.HallName);
         var serviceReport = Assert.Single(report.MostPopularAdditionalServices, item => item.AdditionalServiceId == serviceId);

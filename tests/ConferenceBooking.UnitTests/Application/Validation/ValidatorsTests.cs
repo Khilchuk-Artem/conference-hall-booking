@@ -167,6 +167,40 @@ public class ValidatorsTests
     }
 
     [Fact]
+    public void AvailableHallsValidator_OutsideOperatingHours_IsRejected()
+    {
+        var query = new GetAvailableConferenceHallsQuery
+        {
+            Capacity = 100,
+            StartTime = TestTimes.At(5),
+            EndTime = TestTimes.At(6),
+            Page = 1,
+            PageSize = 10
+        };
+
+        var result = new GetAvailableConferenceHallsQueryValidator().Validate(query);
+
+        Assert.Contains(result.Errors, error => error.ErrorMessage.Contains("within"));
+    }
+
+    [Fact]
+    public void AvailableHallsValidator_CrossDayRequest_IsRejected()
+    {
+        var query = new GetAvailableConferenceHallsQuery
+        {
+            Capacity = 100,
+            StartTime = TestTimes.At(22),
+            EndTime = TestTimes.NextDayAt(6),
+            Page = 1,
+            PageSize = 10
+        };
+
+        var result = new GetAvailableConferenceHallsQueryValidator().Validate(query);
+
+        Assert.Contains(result.Errors, error => error.ErrorMessage.Contains("calendar day"));
+    }
+
+    [Fact]
     public void ReportValidator_RequiresEndAfterStart()
     {
         var from = TestTimes.At(12);
