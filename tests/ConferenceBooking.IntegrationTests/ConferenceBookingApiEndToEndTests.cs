@@ -8,7 +8,6 @@ namespace ConferenceBooking.IntegrationTests;
 
 public sealed class ConferenceBookingApiEndToEndTests : IClassFixture<ConferenceBookingApiFixture>
 {
-    private static readonly Guid ProjectorId = new("d8b8f4d4-3a6f-4f78-9f5a-7e1c9b2a4d11");
     private readonly HttpClient _client;
 
     public ConferenceBookingApiEndToEndTests(ConferenceBookingApiFixture fixture)
@@ -19,12 +18,45 @@ public sealed class ConferenceBookingApiEndToEndTests : IClassFixture<Conference
     [Fact]
     public async Task ConferenceHallBookingWorkflow_CompletesThroughApi()
     {
+        var createServiceResponse = await _client.PostAsJsonAsync("api/v1/AdditionalServices", new
+        {
+            name = "E2E Projector",
+            price = 100m
+        });
+
+        Assert.Equal(HttpStatusCode.Created, createServiceResponse.StatusCode);
+        var serviceId = await createServiceResponse.Content.ReadFromJsonAsync<Guid>();
+        Assert.NotEqual(Guid.Empty, serviceId);
+        Assert.NotNull(createServiceResponse.Headers.Location);
+        Assert.Contains($"/api/v1/AdditionalServices/{serviceId}", createServiceResponse.Headers.Location!.ToString());
+
+        var service = await GetAsync<AdditionalServiceResponse>($"api/v1/AdditionalServices/{serviceId}");
+        Assert.Equal("E2E Projector", service.Name);
+        Assert.Equal(100m, service.Price);
+
+        var editServiceResponse = await _client.PutAsJsonAsync($"api/v1/AdditionalServices/{serviceId}", new
+        {
+            name = "E2E Projector Updated",
+            price = 150m
+        });
+
+        Assert.Equal(HttpStatusCode.OK, editServiceResponse.StatusCode);
+        var editedService = await editServiceResponse.Content.ReadFromJsonAsync<AdditionalServiceResponse>();
+        Assert.NotNull(editedService);
+        Assert.Equal(serviceId, editedService!.Id);
+        Assert.Equal("E2E Projector Updated", editedService.Name);
+        Assert.Equal(150m, editedService.Price);
+
+        var services = await GetAsync<List<AdditionalServiceResponse>>(
+            "api/v1/AdditionalServices?page=1&pageSize=10");
+        Assert.Contains(services, item => item.Id == serviceId);
+
         var createHallResponse = await _client.PostAsJsonAsync("api/v1/ConferenceHalls", new
         {
             name = "E2E Hall",
             capacity = 80,
             rentRate = 2200m,
-            additionalServiceIds = new[] { ProjectorId }
+            additionalServiceIds = new[] { serviceId }
         });
 
         Assert.Equal(HttpStatusCode.Created, createHallResponse.StatusCode);
@@ -36,14 +68,14 @@ public sealed class ConferenceBookingApiEndToEndTests : IClassFixture<Conference
         var hall = await GetAsync<ConferenceHallResponse>($"api/v1/ConferenceHalls/{hallId}");
         Assert.Equal("E2E Hall", hall.Name);
         Assert.Equal(80, hall.Capacity);
-        Assert.Contains(hall.AdditionalServices, service => service.Id == ProjectorId);
+        Assert.Contains(hall.AdditionalServices, service => service.Id == serviceId);
 
         var editHallResponse = await _client.PutAsJsonAsync($"api/v1/ConferenceHalls/{hallId}", new
         {
             name = "E2E Hall Updated",
             capacity = 120,
             rentRate = 2400m,
-            additionalServiceIds = new[] { ProjectorId }
+            additionalServiceIds = new[] { serviceId }
         });
 
         Assert.Equal(HttpStatusCode.OK, editHallResponse.StatusCode);
@@ -63,7 +95,7 @@ public sealed class ConferenceBookingApiEndToEndTests : IClassFixture<Conference
             conferenceHallId = hallId,
             startTime = "2030-01-01T10:00:00+00:00",
             endTime = "2030-01-01T12:00:00+00:00",
-            additionalServiceIds = new[] { ProjectorId }
+            additionalServiceIds = new[] { serviceId }
         };
         using var bookingRequestMessage = new HttpRequestMessage(HttpMethod.Post, "api/v1/Bookings")
         {
@@ -80,8 +112,8 @@ public sealed class ConferenceBookingApiEndToEndTests : IClassFixture<Conference
         Assert.Equal(hallId, booking.ConferenceHallId);
         Assert.Equal("E2E Hall Updated", booking.HallName);
         Assert.Equal(4800m, booking.HallCost);
-        Assert.Equal(500m, booking.TotalServicesCost);
-        Assert.Equal(5300m, booking.TotalCost);
+        Assert.Equal(300m, booking.TotalServicesCost);
+        Assert.Equal(5100m, booking.TotalCost);
         Assert.Single(booking.AdditionalServices);
 
         var replayRequest = new HttpRequestMessage(HttpMethod.Post, "api/v1/Bookings")
@@ -103,11 +135,17 @@ public sealed class ConferenceBookingApiEndToEndTests : IClassFixture<Conference
             "api/v1/Reports/summary?from=2030-01-01T00:00:00%2B00:00&to=2030-01-02T00:00:00%2B00:00");
         Assert.Equal(1, report.BookingsCount);
         Assert.Equal(2d, report.TotalHours);
-        Assert.Equal(5300m, report.TotalRevenue);
+        Assert.Equal(5100m, report.TotalRevenue);
         var hallReport = Assert.Single(report.Halls, item => item.ConferenceHallId == hallId);
         Assert.Equal("E2E Hall Updated", hallReport.HallName);
-        var serviceReport = Assert.Single(report.MostPopularAdditionalServices, item => item.AdditionalServiceId == ProjectorId);
+        var serviceReport = Assert.Single(report.MostPopularAdditionalServices, item => item.AdditionalServiceId == serviceId);
         Assert.Equal(1, serviceReport.UsageCount);
+
+        using var deleteServiceResponse = await _client.DeleteAsync($"api/v1/AdditionalServices/{serviceId}");
+        Assert.Equal(HttpStatusCode.NoContent, deleteServiceResponse.StatusCode);
+
+        using var deletedServiceResponse = await _client.GetAsync($"api/v1/AdditionalServices/{serviceId}");
+        Assert.Equal(HttpStatusCode.NotFound, deletedServiceResponse.StatusCode);
     }
 
     private async Task<T> GetAsync<T>(string requestUri)

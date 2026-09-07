@@ -10,6 +10,7 @@ public partial class ConferenceHallMapper
 {
     [MapperIgnoreSource(nameof(ConferenceHall.Bookings))]
     public static partial ConferenceHallDto ToDto(ConferenceHall source);
-    public static partial AdditionalServiceDto ToDto(AdditionalService source);
+
+    public static AdditionalServiceDto ToDto(AdditionalService source) => AdditionalServiceMapper.ToDto(source);
 
 }
