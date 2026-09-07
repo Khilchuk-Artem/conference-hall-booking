@@ -1,4 +1,5 @@
 ﻿using ConferenceBooking.Domain.Entities;
+using ConferenceBooking.Infrastructure.Data.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -41,6 +42,7 @@ public class ConferenceHallConfiguration : IEntityTypeConfiguration<ConferenceHa
                 {
                     join.HasKey("ConferenceHallId", "AdditionalServiceId");
                     join.ToTable("ConferenceHallAdditionalServices");
+                    join.HasData(SeedDataHelpers.LoadConferenceHallAdditionalServices());
                 });
     }
 }

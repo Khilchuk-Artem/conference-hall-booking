@@ -1,5 +1,6 @@
 using System.Reflection;
 using ConferenceBooking.Domain.Entities;
+using ConferenceBooking.Infrastructure.Data.Helpers;
 using ConferenceBooking.Infrastructure.Idempotency;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,9 @@ public class ConferenceBookingDbContext : DbContext
         builder.Entity<BookingService>();
         builder.Entity<IdempotencyKey>();
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        builder.Entity<AdditionalService>().HasData(SeedDataHelpers.LoadAdditionalServices());
+        builder.Entity<ConferenceHall>().HasData(SeedDataHelpers.LoadConferenceHalls());
 
         builder.Entity<BaseEntity>()
             .UseTpcMappingStrategy()
