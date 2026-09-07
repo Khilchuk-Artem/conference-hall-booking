@@ -4,12 +4,12 @@ namespace ConferenceBooking.Infrastructure.Data.Helpers;
 
 public static class SeedDataHelpers
 {
-    private static readonly Guid ProjectorId = new("0ecf09ee-9673-4a65-a00c-47af18394fdc");
-    private static readonly Guid WiFiId = new("13e371d2-5852-4449-9cd4-c2e3ea26d4b7");
-    private static readonly Guid SoundId = new("9e59d0dd-1045-493a-832d-5573bc549bf2");
-    private static readonly Guid HallAId = new("f7b30b25-dda7-402e-b103-5074f8d607cc");
-    private static readonly Guid HallBId = new("9b0b9e7a-33bd-402e-99cf-1128e0232378");
-    private static readonly Guid HallCId = new("2f25e9a3-94b3-446c-b40d-4a7f5c26708c");
+    private static readonly Guid ProjectorId = new("d8b8f4d4-3a6f-4f78-9f5a-7e1c9b2a4d11");
+    private static readonly Guid WiFiId = new("a4c2e7b1-6d90-4b35-8f21-3c7a5e9d2b44");
+    private static readonly Guid SoundId = new("f1e3b6c8-2a54-4d97-8b30-6e9c5a7d1f22");
+    private static readonly Guid HallAId = new("b7e4a1c9-5d23-4f86-9a10-2c6e8d3b7f55");
+    private static readonly Guid HallBId = new("c9f2d6a8-1b47-4e03-8c65-5a7d9f2b6e88");
+    private static readonly Guid HallCId = new("e3a5c7f9-8d12-4b64-9e30-1a6c5d7b2f99");
 
     public static List<AdditionalService> LoadAdditionalServices()
     {
